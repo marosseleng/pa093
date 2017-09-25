@@ -1,7 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="74de1f6c-7118-44dd-9cfc-fb049167b4b8" name="Default" comment="" />
+    <list default="true" id="74de1f6c-7118-44dd-9cfc-fb049167b4b8" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/KotlinJavaRuntime.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Ids.kt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Point.kt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.kt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/AbstractWidget.kt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/ButtonWidget.kt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/InputFieldWidget.kt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/LineWidget.kt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/PointWidget.kt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/TextWidget.kt" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Ids.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Point.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/AbstractWidget.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/ButtonWidget.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/InputFieldWidget.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/LineWidget.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/PointWidget.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/TextWidget.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/Ids.class" afterPath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/Ids.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/Point.class" afterPath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/Point.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/Sketch.class" afterPath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/Sketch.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/widgets/AbstractWidget.class" afterPath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/widgets/AbstractWidget.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/widgets/ButtonWidget.class" afterPath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/widgets/ButtonWidget.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/widgets/InputFieldWidget.class" afterPath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/widgets/InputFieldWidget.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/widgets/PointWidget.class" afterPath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/widgets/PointWidget.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/widgets/TextWidget.class" afterPath="$PROJECT_DIR$/out/production/pa039/cz/muni/fi/pa039/widgets/TextWidget.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pa039.iml" afterPath="$PROJECT_DIR$/pa039.iml" />
+    </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,76 +49,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Sketch.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.java">
+      <file leaf-file-name="Sketch.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="121" column="31" lean-forward="true" selection-start-line="121" selection-start-column="31" selection-end-line="121" selection-end-column="31" />
+            <state relative-caret-position="185">
+              <caret line="177" column="26" lean-forward="false" selection-start-line="177" selection-start-column="26" selection-end-line="177" selection-end-column="26" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#findPointContaining#0;class#Sketch#0" expanded="false" />
+                <element signature="e#26#368#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LineWidget.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/LineWidget.java">
+      <file leaf-file-name="TextWidget.kt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/TextWidget.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-              <folding>
-                <element signature="e#329#330#0" expanded="true" />
-                <element signature="e#357#358#0" expanded="true" />
-                <element signature="e#397#398#0" expanded="true" />
-                <element signature="e#422#423#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AbstractWidget.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/AbstractWidget.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="22" lean-forward="false" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
-              <folding>
-                <element signature="e#441#442#0" expanded="true" />
-                <element signature="e#481#482#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ButtonWidget.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/ButtonWidget.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="47" lean-forward="false" selection-start-line="4" selection-start-column="47" selection-end-line="4" selection-end-column="47" />
+            <state relative-caret-position="165">
+              <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="InputFieldWidget.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/InputFieldWidget.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="46" lean-forward="false" selection-start-line="4" selection-start-column="46" selection-end-line="4" selection-end-column="46" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PointWidget.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/PointWidget.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="26" column="17" lean-forward="false" selection-start-line="26" selection-start-column="17" selection-end-line="26" selection-end-column="17" />
-              <folding>
-                <element signature="e#452#453#0" expanded="true" />
-                <element signature="e#477#478#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -138,6 +117,14 @@
         <option value="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/AbstractWidget.java" />
         <option value="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/LineWidget.java" />
         <option value="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.java" />
+        <option value="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.kt" />
+        <option value="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Ids.kt" />
+        <option value="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Point.kt" />
+        <option value="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/PointWidget.kt" />
+        <option value="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/AbstractWidget.kt" />
+        <option value="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/LineWidget.kt" />
+        <option value="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/TextWidget.kt" />
+        <option value="$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/InputFieldWidget.kt" />
       </list>
     </option>
   </component>
@@ -225,6 +212,7 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="last_opened_file_path" value="$USER_HOME$/Desktop" />
+    <property name="ignore_missing_gitignore" value="true" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -363,28 +351,29 @@
       <option name="presentableId" value="Default" />
       <updated>1505849272644</updated>
       <workItem from="1505849274203" duration="20104000" />
-      <workItem from="1506354967719" duration="1293000" />
+      <workItem from="1506354967719" duration="2138000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="21397000" />
+    <option name="totallyTimeSpent" value="22242000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="31" width="1368" height="740" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32917467" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32894737" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32894737" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32894737" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25378788" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Dynamic Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39923224" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -407,19 +396,19 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.java</url>
-          <line>166</line>
+          <url>file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.kt</url>
+          <line>164</line>
           <properties />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.java</url>
+          <url>file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.kt</url>
           <line>80</line>
           <properties />
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.java</url>
+          <url>file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.kt</url>
           <line>53</line>
           <properties />
           <option name="timeStamp" value="3" />
@@ -434,29 +423,25 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#findPointContaining#0;class#Sketch#0" expanded="false" />
+            <element signature="e#26#368#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/AbstractWidget.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/AbstractWidget.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
           <caret line="2" column="22" lean-forward="false" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
-          <folding>
-            <element signature="e#441#442#0" expanded="true" />
-            <element signature="e#481#482#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/ButtonWidget.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/ButtonWidget.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
           <caret line="4" column="47" lean-forward="false" selection-start-line="4" selection-start-column="47" selection-end-line="4" selection-end-column="47" />
@@ -464,7 +449,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/InputFieldWidget.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/InputFieldWidget.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
           <caret line="4" column="46" lean-forward="true" selection-start-line="4" selection-start-column="46" selection-end-line="4" selection-end-column="46" />
@@ -472,18 +457,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/PointWidget.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/PointWidget.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
           <caret line="26" column="17" lean-forward="false" selection-start-line="26" selection-start-column="17" selection-end-line="26" selection-end-column="17" />
-          <folding>
-            <element signature="e#452#453#0" expanded="true" />
-            <element signature="e#477#478#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Ids.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Ids.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
           <caret line="6" column="56" lean-forward="false" selection-start-line="6" selection-start-column="56" selection-end-line="6" selection-end-column="56" />
@@ -520,46 +502,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/Widget.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Point.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="19" lean-forward="false" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/TextWidget.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="17" lean-forward="false" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
-          <folding>
-            <element signature="e#385#386#0" expanded="true" />
-            <element signature="e#410#411#0" expanded="true" />
-            <element signature="e#452#453#0" expanded="true" />
-            <element signature="e#476#477#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/ButtonWidget.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="47" lean-forward="false" selection-start-line="4" selection-start-column="47" selection-end-line="4" selection-end-column="47" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/AbstractWidget.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="22" lean-forward="false" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
-          <folding>
-            <element signature="e#441#442#0" expanded="true" />
-            <element signature="e#481#482#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.idea/libraries/processing_core.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -568,54 +510,79 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Ids.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Ids.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="56" lean-forward="false" selection-start-line="6" selection-start-column="56" selection-end-line="6" selection-end-column="56" />
+        <state relative-caret-position="45">
+          <caret line="3" column="10" lean-forward="false" selection-start-line="3" selection-start-column="10" selection-end-line="3" selection-end-column="10" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/PointWidget.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/AbstractWidget.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="26" column="17" lean-forward="false" selection-start-line="26" selection-start-column="17" selection-end-line="26" selection-end-column="17" />
+        <state relative-caret-position="105">
+          <caret line="7" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Point.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="6" lean-forward="false" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/PointWidget.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="1" lean-forward="true" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/LineWidget.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="37" lean-forward="false" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
           <folding>
-            <element signature="e#452#453#0" expanded="true" />
-            <element signature="e#477#478#0" expanded="true" />
+            <element signature="e#34#85#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/InputFieldWidget.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="185">
+          <caret line="177" column="26" lean-forward="false" selection-start-line="177" selection-start-column="26" selection-end-line="177" selection-end-column="26" />
+          <folding>
+            <element signature="e#26#368#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/InputFieldWidget.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
-          <caret line="4" column="46" lean-forward="false" selection-start-line="4" selection-start-column="46" selection-end-line="4" selection-end-column="46" />
+          <caret line="4" column="137" lean-forward="false" selection-start-line="4" selection-start-column="137" selection-end-line="4" selection-end-column="137" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/LineWidget.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/ButtonWidget.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-          <folding>
-            <element signature="e#329#330#0" expanded="true" />
-            <element signature="e#357#358#0" expanded="true" />
-            <element signature="e#397#398#0" expanded="true" />
-            <element signature="e#422#423#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="60">
+          <caret line="4" column="49" lean-forward="false" selection-start-line="4" selection-start-column="49" selection-end-line="4" selection-end-column="49" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/Sketch.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pa039/widgets/TextWidget.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="121" column="31" lean-forward="true" selection-start-line="121" selection-start-column="31" selection-end-line="121" selection-end-column="31" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#findPointContaining#0;class#Sketch#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="165">
+          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
