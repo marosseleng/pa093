@@ -13,7 +13,14 @@ class Sketch : PApplet() {
     private val widgets = HashSet<AbstractWidget>()
 
     private var polygonPoints = mutableListOf<Point>()
-    private var polygonClosed = false
+    private var polygonClosed: Boolean = false
+        set(value) {
+            // turn off the polygon definition
+            field = value
+            if (value) {
+                polygonDefinitionEnabled = false
+            }
+        }
 
     /* SWITCHES */
     private var isInPointsEditingMode = true
@@ -46,11 +53,7 @@ class Sketch : PApplet() {
     private var polygonDefinitionEnabled: Boolean = false
         set(value) {
             field = value
-            if (!value) {
-                polygonPoints.mapTo(points) { point ->
-                    PointWidget(point, diameter / 2)
-                }
-            } else {
+            if (value) {
                 points.clear()
                 polygonPoints.clear()
                 polygonClosed = false
@@ -59,21 +62,21 @@ class Sketch : PApplet() {
             }
         }
 
-    /**
+    /*
      * A point we are currently dragging
      */
     private var currentDraggingPoint: PointWidget? = null
-    /**
+    /*
      * This variable serves as text input handler! When this is not null, all text input goes here
      */
     private var selectedInputField: InputFieldWidget? = null
-    /**
+    /*
      * Helper field to indicate that a button was selected
      */
     private var selectedButton: ButtonWidget? = null
 
     private val diameter = 12
-    private val windowSize = 600
+    private val windowSize = 900
     private val leftPanelSize = 280
 
     private fun handleWidgetClick(widget: AbstractWidget) {
@@ -95,7 +98,7 @@ class Sketch : PApplet() {
         }
     }
 
-    /**
+    /*
      * Generates n random points where n is the user input
      */
     private fun generateRandomPoints() {
@@ -109,7 +112,8 @@ class Sketch : PApplet() {
 
 
     override fun settings() {
-        fullScreen(1)
+        size(windowSize, windowSize)
+//        fullScreen(1)
     }
 
     override fun setup() {
@@ -142,15 +146,25 @@ class Sketch : PApplet() {
 
         widgets.forEach(this::drawWidget)
 
+        if (polygonPoints.isNotEmpty()) {
+            var previous = if (polygonClosed) { polygonPoints.last() } else { polygonPoints.first() }
+            polygonPoints.forEach { p ->
+                fill(0)
+                stroke(0)
+                line(previous.x.toFloat(), previous.y.toFloat(), p.x.toFloat(), p.y.toFloat())
+                previous = p
+            }
+        }
+
         /* CONVEX HULL */
         if ((grahamScanEnabled || giftWrappingEnabled) && points.size > 2) {
-            // draw convex hull
             polygonPoints = when {
-                giftWrappingEnabled -> giftWrapping(points.map(PointWidget::point)).toMutableList()
-                grahamScanEnabled -> grahamScan(points.map(PointWidget::point)).toMutableList()
-                else -> mutableListOf()
-            }
+                giftWrappingEnabled -> giftWrapping(points.map(PointWidget::point))
+                grahamScanEnabled -> grahamScan(points.map(PointWidget::point))
+                else -> emptyList()
+            }.toMutableList()
             polygonClosed = polygonPoints.isNotEmpty()
+            // draw convex hull
             if (polygonPoints.isNotEmpty()) {
                 var previous = if (polygonClosed) { polygonPoints.last() } else { polygonPoints.first() }
                 polygonPoints.forEach { p ->
@@ -170,6 +184,12 @@ class Sketch : PApplet() {
                 stroke(0)
                 ellipse(p.x.toFloat(), p.y.toFloat(), diameter.toFloat(), diameter.toFloat())
             }
+            val triangulationLines = triangulation(adjustPointsOrder(polygonPoints))
+            triangulationLines.forEach {
+                fill(0)
+                stroke(0)
+                line(it.first.x.toFloat(), it.first.y.toFloat(), it.second.x.toFloat(), it.second.y.toFloat())
+            }
         } else {
             /* DRAW ALL POINTS */
             points.forEach { p ->
@@ -177,6 +197,34 @@ class Sketch : PApplet() {
                 stroke(0)
                 ellipse(p.point.x.toFloat(), p.point.y.toFloat(), (p.radius * 2).toFloat(), (p.radius * 2).toFloat())
             }
+        }
+    }
+
+
+
+    /*
+     * This function accepts the list of points defining a polygon.
+     *
+     * These points are put in the list in either clockwise or counter-clockwise order.
+     *
+     * This function will return the same list (containing the same points) but rotated (or mirrored) such that
+     * the first point in the list will be the lower-most one and the button will be ordered in the counter-clockwise order
+     *
+     * 2 Conditions that guarantee the "goodness" of the polygon:
+     *     * Index of the lowest point is 0
+     *     * [1].y <= [0].y && [1].x > [0].x
+     */
+    private fun adjustPointsOrder(polygonPoints: List<Point>): List<Point> {
+        val bottom = polygonPoints.minWith(lexicographicComparator) ?: Point(-1, -1)
+        val indexOfBottom = polygonPoints.indexOf(bottom)
+        val nextPoint = polygonPoints[(indexOfBottom + 1) % polygonPoints.count()]
+        // first find out whether points were defined CW or CCW
+        return if (nextPoint.y <= bottom.y && nextPoint.x > bottom.x) {
+            // direction is CCW, just rotate!
+            polygonPoints.rotate(-indexOfBottom)
+        } else {
+            // Clockwise direction, reverse the list and call recursively
+            adjustPointsOrder(polygonPoints.reversed())
         }
     }
 
@@ -194,9 +242,8 @@ class Sketch : PApplet() {
                         if (!polygonClosed) {
                             polygonPoints.add(pnt)
                         }
-                    } else {
-                        points.add(PointWidget(pnt, diameter / 2))
                     }
+                    points.add(PointWidget(pnt, diameter / 2))
                 } else {
                     currentDraggingPoint = found
                     if (found.point == polygonPoints.firstOrNull()) {
@@ -240,37 +287,37 @@ class Sketch : PApplet() {
     /* KEYBOARD EVENTS */
 
     override fun keyPressed() {
-        when (key) {
-        // TODO: selectedInputField check!
-            PConstants.RETURN, PConstants.ENTER -> isInPointsEditingMode = !isInPointsEditingMode
-            'r' -> {
-                if (isInPointsEditingMode) {
-                    points.add(PointWidget(randomPoint(), diameter / 2))
+        if (selectedInputField != null) {
+            selectedInputField!!.text += key
+        } else {
+            when (key) {
+                PConstants.RETURN, PConstants.ENTER -> isInPointsEditingMode = !isInPointsEditingMode
+                'r' -> {
+                    if (isInPointsEditingMode) {
+                        points.add(PointWidget(randomPoint(), diameter / 2))
+                    }
                 }
-                if (selectedInputField != null) {
+                'g' -> {
+                    if (!polygonDefinitionEnabled) {
+                        giftWrappingEnabled = !giftWrappingEnabled
+                    }
+                }
+                's' -> {
+                    if (!polygonDefinitionEnabled) {
+                        grahamScanEnabled = !grahamScanEnabled
+                    }
+                }
+                't' -> {
+                    if (polygonPoints.count() > 2) {
+                        triangulationEnabled = !triangulationEnabled
+                    }
+                }
+                'p' -> {
+                    polygonDefinitionEnabled = !polygonDefinitionEnabled
+                }
+                else -> if (selectedInputField != null) {
                     selectedInputField!!.text += key
                 }
-            }
-            'g' -> {
-                if (!polygonDefinitionEnabled) {
-                    giftWrappingEnabled = !giftWrappingEnabled
-                }
-            }
-            's' -> {
-                if (!polygonDefinitionEnabled) {
-                    grahamScanEnabled = !grahamScanEnabled
-                }
-            }
-            't' -> {
-                if (polygonPoints.count() > 2) {
-                    triangulationEnabled = !triangulationEnabled
-                }
-            }
-            'p' -> {
-                polygonDefinitionEnabled = !polygonDefinitionEnabled
-            }
-            else -> if (selectedInputField != null) {
-                selectedInputField!!.text += key
             }
         }
     }
@@ -326,4 +373,10 @@ class Sketch : PApplet() {
         stroke(0)
         text(textWidget.text, textWidget.bottomLeft.x.toFloat(), textWidget.bottomLeft.y.toFloat())
     }
+}
+
+fun List<Point>.rotate(amount: Int): List<Point> {
+    val mutableList = toMutableList()
+    Collections.rotate(mutableList, amount)
+    return mutableList
 }
