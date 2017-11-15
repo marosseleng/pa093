@@ -1,4 +1,4 @@
-package cz.muni.fi.pa039
+package cz.muni.fi.pa093
 
 object Ids {
     const val BASIC_POINT = -1

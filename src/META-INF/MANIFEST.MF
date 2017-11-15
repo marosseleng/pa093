@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: cz.muni.fi.pa039.MainKt
+Main-Class: cz.muni.fi.pa093.MainKt
 

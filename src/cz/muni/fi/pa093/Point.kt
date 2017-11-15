@@ -1,4 +1,4 @@
-package cz.muni.fi.pa039
+package cz.muni.fi.pa093
 
 data class Point(var x: Int, var y: Int) {
     operator fun minus(other: Point): Point {

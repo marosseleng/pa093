@@ -1,13 +1,17 @@
-package cz.muni.fi.pa039
+package cz.muni.fi.pa093
 
-import cz.muni.fi.pa039.widgets.*
+import cz.muni.fi.pa093.widgets.*
 import processing.core.PApplet
 import processing.core.PConstants
+import java.awt.Color
 import java.util.*
 
+/**
+ * TODO:
+ *     * dynamic point ellipse size (scales with window size)
+ *     * CLEAR ALL keystroke
+ */
 class Sketch : PApplet() {
-
-    private val random = Random()
 
     private val points = HashSet<PointWidget>()
     private val widgets = HashSet<AbstractWidget>()
@@ -24,6 +28,7 @@ class Sketch : PApplet() {
 
     /* SWITCHES */
     private var isInPointsEditingMode = true
+
     private var giftWrappingEnabled: Boolean = false
         set(value) {
             field = value
@@ -36,6 +41,7 @@ class Sketch : PApplet() {
                 polygonClosed = false
             }
         }
+
     private var grahamScanEnabled: Boolean = false
         set(value) {
             field = value
@@ -48,6 +54,10 @@ class Sketch : PApplet() {
                 polygonClosed = false
             }
         }
+
+    private val isConvexHullEnabled: Boolean
+        get() = grahamScanEnabled || giftWrappingEnabled
+
     private var triangulationEnabled: Boolean = false
 
     private var polygonDefinitionEnabled: Boolean = false
@@ -59,6 +69,18 @@ class Sketch : PApplet() {
                 polygonClosed = false
                 grahamScanEnabled = false
                 giftWrappingEnabled = false
+                kDTreesEnabled = false
+            }
+        }
+
+    private var kDTreesEnabled: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                grahamScanEnabled = false
+                giftWrappingEnabled = false
+                triangulationEnabled = false
+                polygonDefinitionEnabled = false
             }
         }
 
@@ -75,9 +97,19 @@ class Sketch : PApplet() {
      */
     private var selectedButton: ButtonWidget? = null
 
-    private val diameter = 12
     private val windowSize = 900
+    private val diameter = 10 * windowSize / 1000
     private val leftPanelSize = 280
+
+    private val random = Random()
+    private val numOfColors = 20
+    private val colors: IntArray by lazy {
+        val lst = mutableListOf<Int>()
+        repeat(numOfColors) {
+            lst.add(randomColorRGB())
+        }
+        lst.toIntArray()
+    }
 
     private fun handleWidgetClick(widget: AbstractWidget) {
         widget.isSelected = true
@@ -113,7 +145,6 @@ class Sketch : PApplet() {
 
     override fun settings() {
         size(windowSize, windowSize)
-//        fullScreen(1)
     }
 
     override fun setup() {
@@ -122,9 +153,9 @@ class Sketch : PApplet() {
         rect(0f, 0f, leftPanelSize.toFloat(), height.toFloat())
         stroke(0)
         fill(0)
-        widgets.add(TextWidget(Point(25, 225), "Number of random points:", Ids.RANDOM_POINTS_TITLE_TEXT))
-        widgets.add(InputFieldWidget(Point(25, 235), 50, 30, "", Ids.RANDOM_POINTS_INPUT_FIELD))
-        widgets.add(ButtonWidget(Point(80, 235), 90, 30, "GENERATE!", Ids.RANDOM_POINTS_GENERATE_BUTTON))
+        widgets.add(TextWidget(Point(25, 250), "Number of random points:", Ids.RANDOM_POINTS_TITLE_TEXT))
+        widgets.add(InputFieldWidget(Point(25, 260), 50, 30, "", Ids.RANDOM_POINTS_INPUT_FIELD))
+        widgets.add(ButtonWidget(Point(80, 260), 90, 30, "GENERATE!", Ids.RANDOM_POINTS_GENERATE_BUTTON))
         polygonPoints = mutableListOf()
         polygonClosed = false
     }
@@ -140,14 +171,19 @@ class Sketch : PApplet() {
         text(if (giftWrappingEnabled) "[G] Gift Wrapping ENABLED." else "[G] Gift Wrapping DISABLED.", 25f, 75f)
         text(if (triangulationEnabled) "[T] Triangulation ENABLED." else "[T] Triangulation DISABLED.", 25f, 100f)
         text(if (polygonDefinitionEnabled) "[P] Polygon definition ENABLED." else "[P] Polygon definition DISABLED.", 25f, 125f)
-        text("[R] Add random point.", 25f, 150f)
-        text("[L_MOUSE] Add new point / move point.", 25f, 175f)
-        text("[R_MOUSE] Delete the point.", 25f, 200f)
+        text(if (kDTreesEnabled) "[K] k-d trees ENABLED." else "[K] k-d trees DISABLED.", 25f, 150f)
+        text("[R] Add random point.", 25f, 175f)
+        text("[L_MOUSE] Add new point / move point.", 25f, 200f)
+        text("[R_MOUSE] Delete the point.", 25f, 225f)
 
         widgets.forEach(this::drawWidget)
 
         if (polygonPoints.isNotEmpty()) {
-            var previous = if (polygonClosed) { polygonPoints.last() } else { polygonPoints.first() }
+            var previous = if (polygonClosed) {
+                polygonPoints.last()
+            } else {
+                polygonPoints.first()
+            }
             polygonPoints.forEach { p ->
                 fill(0)
                 stroke(0)
@@ -166,7 +202,11 @@ class Sketch : PApplet() {
             polygonClosed = polygonPoints.isNotEmpty()
             // draw convex hull
             if (polygonPoints.isNotEmpty()) {
-                var previous = if (polygonClosed) { polygonPoints.last() } else { polygonPoints.first() }
+                var previous = if (polygonClosed) {
+                    polygonPoints.last()
+                } else {
+                    polygonPoints.first()
+                }
                 polygonPoints.forEach { p ->
                     fill(0)
                     stroke(0)
@@ -198,9 +238,60 @@ class Sketch : PApplet() {
                 ellipse(p.point.x.toFloat(), p.point.y.toFloat(), (p.radius * 2).toFloat(), (p.radius * 2).toFloat())
             }
         }
+
+        if (kDTreesEnabled) {
+            drawKdTree(constructKdTree(points.map { it.point }))
+        }
     }
 
+    private fun drawKdTree(node: KdNode?) {
+        if (node == null) {
+            return
+        }
+        val color = colors[node.depth % numOfColors]
+        stroke(color)
+        fill(color)
+        ellipse(node.point.x.toFloat(), node.point.y.toFloat(), diameter.toFloat(), diameter.toFloat())
 
+        val boundary = getLineBoundary(node) ?: return
+
+        if (node.depth % 2 != 0) {
+            line(boundary.first, node.point.y.toFloat(), boundary.second, node.point.y.toFloat())
+        } else {
+            line(node.point.x.toFloat(), boundary.first, node.point.x.toFloat(), boundary.second)
+        }
+        drawKdTree(node.lesser)
+        drawKdTree(node.greater)
+    }
+
+    private fun getLineBoundary(node: KdNode?): Pair<Float, Float>? {
+        if (node == null) {
+            return null
+        }
+        val myParent = node.parent ?: // first line is top-to bottom
+                return Pair(0.0f, windowSize.toFloat())
+        val iAmLeftChild = myParent.lesser == node
+
+        return if (iAmLeftChild) {
+            val startBoundary = getLineBoundary(node.parent.parent)
+            if (node.depth % 2 != 0) {
+                // horizontal
+                Pair(startBoundary?.first ?: leftPanelSize + 1.0f, myParent.point.x - 1.0f)
+            } else {
+                Pair(startBoundary?.first ?: 0.0f, myParent.point.y - 1.0f)
+            }
+        } else {
+            val endBoundary = getLineBoundary(node.parent.parent)
+            if (node.depth % 2 != 0) {
+                // horizontal
+                Pair(myParent.point.x + 1.0f, endBoundary?.second ?:  windowSize.toFloat())
+            } else {
+                Pair(myParent.point.y + 1.0f, endBoundary?.second ?: windowSize.toFloat())
+            }
+        }
+    }
+
+    private fun randomColorRGB() = Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)).rgb
 
     /*
      * This function accepts the list of points defining a polygon.
@@ -314,6 +405,9 @@ class Sketch : PApplet() {
                 }
                 'p' -> {
                     polygonDefinitionEnabled = !polygonDefinitionEnabled
+                }
+                'k' -> {
+                    kDTreesEnabled = !kDTreesEnabled
                 }
                 else -> if (selectedInputField != null) {
                     selectedInputField!!.text += key

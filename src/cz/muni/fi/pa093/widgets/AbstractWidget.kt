@@ -1,4 +1,4 @@
-package cz.muni.fi.pa039.widgets
+package cz.muni.fi.pa093.widgets
 
 interface AbstractWidget {
     var isSelected: Boolean

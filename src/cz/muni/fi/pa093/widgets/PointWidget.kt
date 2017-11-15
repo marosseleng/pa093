@@ -1,6 +1,6 @@
-package cz.muni.fi.pa039.widgets
+package cz.muni.fi.pa093.widgets
 
-import cz.muni.fi.pa039.Point
+import cz.muni.fi.pa093.Point
 
 class PointWidget(var point: Point, var radius: Int) : AbstractWidget {
     override var isSelected: Boolean = false

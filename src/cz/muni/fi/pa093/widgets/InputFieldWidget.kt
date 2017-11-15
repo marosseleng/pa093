@@ -1,6 +1,6 @@
-package cz.muni.fi.pa039.widgets
+package cz.muni.fi.pa093.widgets
 
-import cz.muni.fi.pa039.Point
+import cz.muni.fi.pa093.Point
 
 open class InputFieldWidget(var topLeft: Point, var width: Int, var height: Int, var text: String, override val id: Int) : AbstractWidget {
     override var isSelected = false

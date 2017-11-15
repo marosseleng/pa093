@@ -1,4 +1,4 @@
-package cz.muni.fi.pa039
+package cz.muni.fi.pa093
 
 val lexicographicComparator = Comparator<Point> { first, second ->
     if (first.y != second.y) {
