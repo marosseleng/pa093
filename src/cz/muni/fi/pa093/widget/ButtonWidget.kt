@@ -1,4 +1,4 @@
-package cz.muni.fi.pa093.widgets
+package cz.muni.fi.pa093.widget
 
 import cz.muni.fi.pa093.Point
 

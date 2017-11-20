@@ -1,5 +1,8 @@
-package cz.muni.fi.pa093
+package cz.muni.fi.pa093.impl
 
+import cz.muni.fi.pa093.Point
+import cz.muni.fi.pa093.lexicographicComparator
+import cz.muni.fi.pa093.pointsFormLeftTurn
 import java.util.*
 
 /**
@@ -69,7 +72,7 @@ fun findPointsToPop(stack: Deque<Point>, currentPoint: Point, leftPath: Deque<Po
         if (leftPath.contains(currentPoint)) {
             // should be clockwise
             // currentPoint----top----tmp
-            if (pointsFormLeftTurnOrLine(currentPoint, top, tmp)) {
+            if (pointsFormLeftTurn(currentPoint, top, tmp)) {
                 foundCorrectPoint = true
             } else {
                 if (foundCorrectPoint) {
@@ -81,7 +84,7 @@ fun findPointsToPop(stack: Deque<Point>, currentPoint: Point, leftPath: Deque<Po
             // right path
             // should be counter-clockwise
             // currentPoint----top----tmp
-            if (pointsFormLeftTurnOrLine(tmp, top, currentPoint)) {
+            if (pointsFormLeftTurn(tmp, top, currentPoint)) {
                 foundCorrectPoint = true
             } else {
                 if (foundCorrectPoint) {

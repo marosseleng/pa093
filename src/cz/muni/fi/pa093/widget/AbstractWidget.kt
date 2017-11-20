@@ -1,4 +1,6 @@
-package cz.muni.fi.pa093.widgets
+package cz.muni.fi.pa093.widget
+
+import processing.core.PApplet
 
 interface AbstractWidget {
     var isSelected: Boolean
@@ -10,4 +12,5 @@ interface AbstractWidget {
         get() = if (isSelected) 230 else 255
 
     fun pointIsInside(x: Int, y: Int): Boolean
+    fun draw(applet: PApplet)
 }

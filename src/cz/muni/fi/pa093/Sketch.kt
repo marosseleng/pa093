@@ -1,21 +1,25 @@
 package cz.muni.fi.pa093
 
-import cz.muni.fi.pa093.widgets.*
+import cz.muni.fi.pa093.impl.*
+import cz.muni.fi.pa093.widget.*
 import processing.core.PApplet
 import processing.core.PConstants
+import processing.core.PFont
 import java.awt.Color
 import java.util.*
 
 /**
  * TODO:
- *     * dynamic point ellipse size (scales with window size)
- *     * CLEAR ALL keystroke
+ *     * automatic repositioning of widgets on new widget addition
  */
 class Sketch : PApplet() {
 
-    private val points = HashSet<PointWidget>()
-    private val widgets = HashSet<AbstractWidget>()
+    private val widgets = setOf(
+            TextWidget(Point(25, 300), "Number of random points:", Ids.RANDOM_POINTS_TITLE_TEXT),
+            InputFieldWidget(Point(25, 310), 50, 30, "", Ids.RANDOM_POINTS_INPUT_FIELD),
+            ButtonWidget(Point(80, 310), 90, 30, "GENERATE!", Ids.RANDOM_POINTS_GENERATE_BUTTON))
 
+    private val points = HashSet<Point>()
     private var polygonPoints = mutableListOf<Point>()
     private var polygonClosed: Boolean = false
         set(value) {
@@ -25,6 +29,20 @@ class Sketch : PApplet() {
                 polygonDefinitionEnabled = false
             }
         }
+
+    /*
+     * A point we are currently dragging
+     */
+    private var currentDraggingPoint: Point? = null
+    /*
+     * This variable serves as text input handler! When this is not null, all text input goes here
+     */
+    private var selectedInputField: InputFieldWidget? = null
+    /*
+     * Helper field to indicate that a button was selected
+     */
+    private var selectedButton: ButtonWidget? = null
+
 
     /* SWITCHES */
     private var isInPointsEditingMode = true
@@ -55,8 +73,12 @@ class Sketch : PApplet() {
             }
         }
 
-    private val isConvexHullEnabled: Boolean
+    private var convexHullEnabled: Boolean
         get() = grahamScanEnabled || giftWrappingEnabled
+        set(value) {
+            grahamScanEnabled = value
+            giftWrappingEnabled = value
+        }
 
     private var triangulationEnabled: Boolean = false
 
@@ -84,80 +106,17 @@ class Sketch : PApplet() {
             }
         }
 
-    /*
-     * A point we are currently dragging
-     */
-    private var currentDraggingPoint: PointWidget? = null
-    /*
-     * This variable serves as text input handler! When this is not null, all text input goes here
-     */
-    private var selectedInputField: InputFieldWidget? = null
-    /*
-     * Helper field to indicate that a button was selected
-     */
-    private var selectedButton: ButtonWidget? = null
-
-    private val windowSize = 900
-    private val diameter = 10 * windowSize / 1000
-    private val leftPanelSize = 280
-
-    private val random = Random()
-    private val numOfColors = 20
-    private val colors: IntArray by lazy {
-        val lst = mutableListOf<Int>()
-        repeat(numOfColors) {
-            lst.add(randomColorRGB())
-        }
-        lst.toIntArray()
-    }
-
-    private fun handleWidgetClick(widget: AbstractWidget) {
-        widget.isSelected = true
-        if (widget is ButtonWidget) {
-            selectedButton = widget
-            handleButtonOnClickAction(widget.id)
-        }
-        if (widget is InputFieldWidget) {
-            setSelectedInputField(widget)
-            return
-        }
-        disableSelectedInputField()
-    }
-
-    private fun handleButtonOnClickAction(widgetId: Int) {
-        when (widgetId) {
-            Ids.RANDOM_POINTS_GENERATE_BUTTON -> generateRandomPoints()
-        }
-    }
+    private var delaunayTriangulationEnabled: Boolean = false
 
     /*
-     * Generates n random points where n is the user input
+     * CORE functions
      */
-    private fun generateRandomPoints() {
-        widgets
-                .filter { it.id == Ids.RANDOM_POINTS_INPUT_FIELD }
-                .filterIsInstance<InputFieldWidget>()
-                .map { it.text.toIntOrNull() ?: 0 }
-                .flatMap { 0 until it }
-                .forEach { points.add(PointWidget(randomPoint(), diameter / 2)) }
-    }
-
-
     override fun settings() {
         size(windowSize, windowSize)
     }
 
     override fun setup() {
-        background(255)
-        fill(135f, 175f, 163f)
-        rect(0f, 0f, leftPanelSize.toFloat(), height.toFloat())
-        stroke(0)
-        fill(0)
-        widgets.add(TextWidget(Point(25, 250), "Number of random points:", Ids.RANDOM_POINTS_TITLE_TEXT))
-        widgets.add(InputFieldWidget(Point(25, 260), 50, 30, "", Ids.RANDOM_POINTS_INPUT_FIELD))
-        widgets.add(ButtonWidget(Point(80, 260), 90, 30, "GENERATE!", Ids.RANDOM_POINTS_GENERATE_BUTTON))
-        polygonPoints = mutableListOf()
-        polygonClosed = false
+        textSize(15f)
     }
 
     override fun draw() {
@@ -167,16 +126,18 @@ class Sketch : PApplet() {
         rect(0f, 0f, leftPanelSize.toFloat(), height.toFloat())
         fill(255f, 0f, 90f)
         text(if (isInPointsEditingMode) "[Enter] Points editing ENABLED." else "[Enter] Points editing DISABLED.", 25f, 25f)
-        text(if (grahamScanEnabled) "[S] Graham Scan ENABLED." else "[S] Graham Scan DISABLED.", 25f, 50f)
-        text(if (giftWrappingEnabled) "[G] Gift Wrapping ENABLED." else "[G] Gift Wrapping DISABLED.", 25f, 75f)
-        text(if (triangulationEnabled) "[T] Triangulation ENABLED." else "[T] Triangulation DISABLED.", 25f, 100f)
-        text(if (polygonDefinitionEnabled) "[P] Polygon definition ENABLED." else "[P] Polygon definition DISABLED.", 25f, 125f)
-        text(if (kDTreesEnabled) "[K] k-d trees ENABLED." else "[K] k-d trees DISABLED.", 25f, 150f)
-        text("[R] Add random point.", 25f, 175f)
-        text("[L_MOUSE] Add new point / move point.", 25f, 200f)
-        text("[R_MOUSE] Delete the point.", 25f, 225f)
+        text("[X] CLEAR", 25f, 50f)
+        text(if (grahamScanEnabled) "[S] Graham Scan ENABLED." else "[S] Graham Scan DISABLED.", 25f, 75f)
+        text(if (giftWrappingEnabled) "[G] Gift Wrapping ENABLED." else "[G] Gift Wrapping DISABLED.", 25f, 100f)
+        text(if (triangulationEnabled) "[T] Triangulation ENABLED." else "[T] Triangulation DISABLED.", 25f, 125f)
+        text(if (polygonDefinitionEnabled) "[P] Polygon definition ENABLED." else "[P] Polygon definition DISABLED.", 25f, 150f)
+        text(if (kDTreesEnabled) "[K] k-d trees ENABLED." else "[K] k-d trees DISABLED.", 25f, 175f)
+        text(if (delaunayTriangulationEnabled) "[D] Delaunay triangulation ENABLED." else "[D] Delaunay triangulation DISABLED.", 25f, 200f)
+        text("[R] Add random point.", 25f, 225f)
+        text("[L_MOUSE] Add new point / move point.", 25f, 250f)
+        text("[R_MOUSE] Delete the point.", 25f, 275f)
 
-        widgets.forEach(this::drawWidget)
+        widgets.forEach { it.draw(this) }
 
         if (polygonPoints.isNotEmpty()) {
             var previous = if (polygonClosed) {
@@ -195,8 +156,8 @@ class Sketch : PApplet() {
         /* CONVEX HULL */
         if ((grahamScanEnabled || giftWrappingEnabled) && points.size > 2) {
             polygonPoints = when {
-                giftWrappingEnabled -> giftWrapping(points.map(PointWidget::point))
-                grahamScanEnabled -> grahamScan(points.map(PointWidget::point))
+                giftWrappingEnabled -> giftWrapping(points)
+                grahamScanEnabled -> grahamScan(points)
                 else -> emptyList()
             }.toMutableList()
             polygonClosed = polygonPoints.isNotEmpty()
@@ -222,7 +183,7 @@ class Sketch : PApplet() {
             polygonPoints.forEach { p ->
                 fill(0)
                 stroke(0)
-                ellipse(p.x.toFloat(), p.y.toFloat(), diameter.toFloat(), diameter.toFloat())
+                ellipse(p.x.toFloat(), p.y.toFloat(), pointDiameter.toFloat(), pointDiameter.toFloat())
             }
             val triangulationLines = triangulation(adjustPointsOrder(polygonPoints))
             triangulationLines.forEach {
@@ -235,87 +196,31 @@ class Sketch : PApplet() {
             points.forEach { p ->
                 fill(0)
                 stroke(0)
-                ellipse(p.point.x.toFloat(), p.point.y.toFloat(), (p.radius * 2).toFloat(), (p.radius * 2).toFloat())
+                ellipse(p.x.toFloat(), p.y.toFloat(), pointDiameter.toFloat(), pointDiameter.toFloat())
             }
         }
 
+        /* kD trees */
         if (kDTreesEnabled) {
-            drawKdTree(constructKdTree(points.map { it.point }))
+            drawKdTree(constructKdTree(points.toList()))
         }
-    }
 
-    private fun drawKdTree(node: KdNode?) {
-        if (node == null) {
-            return
-        }
-        val color = colors[node.depth % numOfColors]
-        stroke(color)
-        fill(color)
-        ellipse(node.point.x.toFloat(), node.point.y.toFloat(), diameter.toFloat(), diameter.toFloat())
-
-        val boundary = getLineBoundary(node) ?: return
-
-        if (node.depth % 2 != 0) {
-            line(boundary.first, node.point.y.toFloat(), boundary.second, node.point.y.toFloat())
-        } else {
-            line(node.point.x.toFloat(), boundary.first, node.point.x.toFloat(), boundary.second)
-        }
-        drawKdTree(node.lesser)
-        drawKdTree(node.greater)
-    }
-
-    private fun getLineBoundary(node: KdNode?): Pair<Float, Float>? {
-        if (node == null) {
-            return null
-        }
-        val myParent = node.parent ?: // first line is top-to bottom
-                return Pair(0.0f, windowSize.toFloat())
-        val iAmLeftChild = myParent.lesser == node
-
-        return if (iAmLeftChild) {
-            val startBoundary = getLineBoundary(node.parent.parent)
-            if (node.depth % 2 != 0) {
-                // horizontal
-                Pair(startBoundary?.first ?: leftPanelSize + 1.0f, myParent.point.x - 1.0f)
-            } else {
-                Pair(startBoundary?.first ?: 0.0f, myParent.point.y - 1.0f)
+        /* Delaunay triangulation */
+        if (delaunayTriangulationEnabled) {
+            val delaunay = computeDelaunay(points)
+            delaunay.first.forEach {
+                fill(0)
+                stroke(0)
+                line(it.first.x.toFloat(), it.first.y.toFloat(), it.second.x.toFloat(), it.second.y.toFloat())
             }
-        } else {
-            val endBoundary = getLineBoundary(node.parent.parent)
-            if (node.depth % 2 != 0) {
-                // horizontal
-                Pair(myParent.point.x + 1.0f, endBoundary?.second ?:  windowSize.toFloat())
-            } else {
-                Pair(myParent.point.y + 1.0f, endBoundary?.second ?: windowSize.toFloat())
+
+            delaunay.second.forEach {
+                stroke(Color.RED.rgb, 40.0f)
+                fill(255, 0.0f)
+                ellipse(it.center.x.toFloat(), it.center.y.toFloat(), it.radius.toFloat() * 2.0f, it.radius.toFloat() * 2.0f)
+                fill(Color.RED.rgb, 40.0f)
+                ellipse(it.center.x.toFloat(), it.center.y.toFloat(), 4.0f, 4.0f)
             }
-        }
-    }
-
-    private fun randomColorRGB() = Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)).rgb
-
-    /*
-     * This function accepts the list of points defining a polygon.
-     *
-     * These points are put in the list in either clockwise or counter-clockwise order.
-     *
-     * This function will return the same list (containing the same points) but rotated (or mirrored) such that
-     * the first point in the list will be the lower-most one and the button will be ordered in the counter-clockwise order
-     *
-     * 2 Conditions that guarantee the "goodness" of the polygon:
-     *     * Index of the lowest point is 0
-     *     * [1].y <= [0].y && [1].x > [0].x
-     */
-    private fun adjustPointsOrder(polygonPoints: List<Point>): List<Point> {
-        val bottom = polygonPoints.minWith(lexicographicComparator) ?: Point(-1, -1)
-        val indexOfBottom = polygonPoints.indexOf(bottom)
-        val nextPoint = polygonPoints[(indexOfBottom + 1) % polygonPoints.count()]
-        // first find out whether points were defined CW or CCW
-        return if (nextPoint.y <= bottom.y && nextPoint.x > bottom.x) {
-            // direction is CCW, just rotate!
-            polygonPoints.rotate(-indexOfBottom)
-        } else {
-            // Clockwise direction, reverse the list and call recursively
-            adjustPointsOrder(polygonPoints.reversed())
         }
     }
 
@@ -334,10 +239,10 @@ class Sketch : PApplet() {
                             polygonPoints.add(pnt)
                         }
                     }
-                    points.add(PointWidget(pnt, diameter / 2))
+                    points.add(pnt)
                 } else {
                     currentDraggingPoint = found
-                    if (found.point == polygonPoints.firstOrNull()) {
+                    if (found == polygonPoints.firstOrNull()) {
                         polygonClosed = true
                     }
                 }
@@ -368,10 +273,29 @@ class Sketch : PApplet() {
             return
         }
         if (currentDraggingPoint != null) {
-            points.remove(currentDraggingPoint!!)// FIXME fugly!
-            val p = PointWidget(Point(mouseX, mouseY), diameter / 2)
+            points.remove(currentDraggingPoint ?: points.first())
+            val p = Point(mouseX, mouseY)
             currentDraggingPoint = p
             points.add(p)
+        }
+    }
+
+    private fun handleWidgetClick(widget: AbstractWidget) {
+        widget.isSelected = true
+        if (widget is ButtonWidget) {
+            selectedButton = widget
+            handleButtonOnClickAction(widget.id)
+        }
+        if (widget is InputFieldWidget) {
+            setSelectedInputField(widget)
+            return
+        }
+        disableSelectedInputField()
+    }
+
+    private fun handleButtonOnClickAction(widgetId: Int) {
+        when (widgetId) {
+            Ids.RANDOM_POINTS_GENERATE_BUTTON -> generateRandomPoints()
         }
     }
 
@@ -383,9 +307,12 @@ class Sketch : PApplet() {
         } else {
             when (key) {
                 PConstants.RETURN, PConstants.ENTER -> isInPointsEditingMode = !isInPointsEditingMode
+                'x' -> {
+                    clearAll()
+                }
                 'r' -> {
                     if (isInPointsEditingMode) {
-                        points.add(PointWidget(randomPoint(), diameter / 2))
+                        points.add(randomPoint())
                     }
                 }
                 'g' -> {
@@ -409,6 +336,10 @@ class Sketch : PApplet() {
                 'k' -> {
                     kDTreesEnabled = !kDTreesEnabled
                 }
+                'd' -> {
+                    delaunayTriangulationEnabled = !delaunayTriangulationEnabled
+                    kotlin.io.println()
+                }
                 else -> if (selectedInputField != null) {
                     selectedInputField!!.text += key
                 }
@@ -416,19 +347,31 @@ class Sketch : PApplet() {
         }
     }
 
-    private fun randomPoint(): Point {
-        val magicConstant = 50
-        val x = random.nextInt(width - leftPanelSize - diameter - magicConstant) + leftPanelSize + diameter / 2 + magicConstant / 2
-        val y = random.nextInt(height - diameter - magicConstant) + diameter / 2 + magicConstant / 2
-        return Point(x, y)
+    /* HELPER FUNCTIONS */
+
+    private fun clearAll() {
+        points.clear()
+        polygonPoints.clear()
+        polygonClosed = false
+
+        isInPointsEditingMode = true
+        polygonDefinitionEnabled = false
+        convexHullEnabled = false
+        triangulationEnabled = false
+        kDTreesEnabled = false
+        delaunayTriangulationEnabled = false
     }
 
-    private fun drawWidget(widget: AbstractWidget) {
-        if (widget is InputFieldWidget) {
-            drawInputField(widget)
-        } else if (widget is TextWidget) {
-            drawTextWidget(widget)
-        }
+    /*
+     * Generates n random points where n is the user input
+     */
+    private fun generateRandomPoints() {
+        widgets
+                .filter { it.id == Ids.RANDOM_POINTS_INPUT_FIELD }
+                .filterIsInstance<InputFieldWidget>()
+                .map { it.text.toIntOrNull() ?: 0 }
+                .flatMap { 0 until it }
+                .forEach { points.add(randomPoint()) }
     }
 
     private fun disableSelectedInputField() {
@@ -444,33 +387,31 @@ class Sketch : PApplet() {
         selectedInputField?.isSelected = true
     }
 
-    private fun findPointContaining(x: Int, y: Int): PointWidget? {
-        return points.firstOrNull { it.pointIsInside(x, y) }
+    private fun findPointContaining(x: Int, y: Int) = points.firstOrNull {
+        Math.pow((x - it.x), 2.0) + Math.pow((y - it.y), 2.0) <= Math.pow(pointDiameter / 2.0, 2.0)
     }
 
-    private fun deletePointContaining(x: Int, y: Int) {
-        points.removeIf { p -> p.pointIsInside(x, y) }
+    private fun deletePointContaining(x: Int, y: Int) = points.removeIf {
+        Math.pow((x - it.x), 2.0) + Math.pow((y - it.y), 2.0) <= Math.pow(pointDiameter / 2.0, 2.0)
     }
 
-    private fun drawInputField(inputField: InputFieldWidget) {
-        fill(inputField.fill)
-        stroke(inputField.stroke)
-        val topLeftX = inputField.topLeft.x
-        val topLeftY = inputField.topLeft.y
-        rect(topLeftX.toFloat(), topLeftY.toFloat(), inputField.width.toFloat(), inputField.height.toFloat(), 2f)
-        fill(inputField.stroke)
-        text(inputField.text, (topLeftX + 5).toFloat(), (topLeftY + inputField.height - 10).toFloat())
-    }
+    private fun drawKdTree(node: KdNode?) {
+        if (node == null) {
+            return
+        }
+        val color = colors[node.depth % numOfColors]
+        stroke(color)
+        fill(color)
+        ellipse(node.point.x.toFloat(), node.point.y.toFloat(), pointDiameter.toFloat(), pointDiameter.toFloat())
 
-    private fun drawTextWidget(textWidget: TextWidget) {
-        fill(0)
-        stroke(0)
-        text(textWidget.text, textWidget.bottomLeft.x.toFloat(), textWidget.bottomLeft.y.toFloat())
-    }
-}
+        val boundary = getLineBoundary(node) ?: return
 
-fun List<Point>.rotate(amount: Int): List<Point> {
-    val mutableList = toMutableList()
-    Collections.rotate(mutableList, amount)
-    return mutableList
+        if (node.depth % 2 != 0) {
+            line(boundary.first.toFloat(), node.point.y.toFloat(), boundary.second.toFloat(), node.point.y.toFloat())
+        } else {
+            line(node.point.x.toFloat(), boundary.first.toFloat(), node.point.x.toFloat(), boundary.second.toFloat())
+        }
+        drawKdTree(node.lesser)
+        drawKdTree(node.greater)
+    }
 }

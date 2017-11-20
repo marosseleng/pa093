@@ -1,11 +1,14 @@
-package cz.muni.fi.pa093
+package cz.muni.fi.pa093.impl
 
+import cz.muni.fi.pa093.Point
+import cz.muni.fi.pa093.angleBetween3
+import cz.muni.fi.pa093.pointsFormLeftTurn
 import java.util.*
 
 /**
  * Performs the gift wrapping algorithm
  */
-fun giftWrapping(points: List<Point>): List<Point> {
+fun giftWrapping(points: Set<Point>): List<Point> {
     if (points.isEmpty() || points.count() < 3) {
         return emptyList()
     }
@@ -34,17 +37,17 @@ fun giftWrapping(points: List<Point>): List<Point> {
 /**
  * Performs the Graham Scan algorithm to find the convex hull
  */
-fun grahamScan(points: List<Point>): List<Point> {
+fun grahamScan(points: Set<Point>): List<Point> {
     if (points.isEmpty() || points.count() < 3) {
         return emptyList()
     }
 
     val startingPoint = points.maxWith(Comparator { first, second ->
-        if (first.y != second.y) {
-            first.y - second.y
+        (if (first.y != second.y) {
+            Math.signum(first.y - second.y)
         } else {
-            second.x - first.x
-        }
+            Math.signum(second.x - first.x)
+        }).toInt()
     }) ?: Point(0, 0)
 
     val xAxisEnd = startingPoint.copy(x = startingPoint.x + 10)
@@ -58,7 +61,7 @@ fun grahamScan(points: List<Point>): List<Point> {
         val first = stack[stack.lastIndex - stack.lastIndex]
         val second = stack[stack.lastIndex - stack.lastIndex + 1]
         val third = remaining[j]
-        if (pointsFormLeftTurnOrLine(first, second, third)) {
+        if (pointsFormLeftTurn(first, second, third)) {
             stack.push(third)
             j += 1
         } else {
