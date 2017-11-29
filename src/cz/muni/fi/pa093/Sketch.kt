@@ -4,8 +4,6 @@ import cz.muni.fi.pa093.impl.*
 import cz.muni.fi.pa093.widget.*
 import processing.core.PApplet
 import processing.core.PConstants
-import processing.core.PFont
-import java.awt.Color
 import java.util.*
 
 /**
@@ -15,9 +13,9 @@ import java.util.*
 class Sketch : PApplet() {
 
     private val widgets = setOf(
-            TextWidget(Point(25, 300), "Number of random points:", Ids.RANDOM_POINTS_TITLE_TEXT),
-            InputFieldWidget(Point(25, 310), 50, 30, "", Ids.RANDOM_POINTS_INPUT_FIELD),
-            ButtonWidget(Point(80, 310), 90, 30, "GENERATE!", Ids.RANDOM_POINTS_GENERATE_BUTTON))
+            TextWidget(Point(25, 350), "Number of random points:", Ids.RANDOM_POINTS_TITLE_TEXT),
+            InputFieldWidget(Point(25, 360), 50, 30, "", Ids.RANDOM_POINTS_INPUT_FIELD),
+            ButtonWidget(Point(80, 360), 90, 30, "GENERATE!", Ids.RANDOM_POINTS_GENERATE_BUTTON))
 
     private val points = HashSet<Point>()
     private var polygonPoints = mutableListOf<Point>()
@@ -108,6 +106,10 @@ class Sketch : PApplet() {
 
     private var delaunayTriangulationEnabled: Boolean = false
 
+    private var voronoiDiagramEnabled: Boolean = false
+
+    private var circumCirclesEnabled: Boolean = false
+
     /*
      * CORE functions
      */
@@ -121,23 +123,6 @@ class Sketch : PApplet() {
 
     override fun draw() {
         background(255)
-        fill(150f, 241f, 255f)
-        stroke(150f, 241f, 255f)
-        rect(0f, 0f, leftPanelSize.toFloat(), height.toFloat())
-        fill(255f, 0f, 90f)
-        text(if (isInPointsEditingMode) "[Enter] Points editing ENABLED." else "[Enter] Points editing DISABLED.", 25f, 25f)
-        text("[X] CLEAR", 25f, 50f)
-        text(if (grahamScanEnabled) "[S] Graham Scan ENABLED." else "[S] Graham Scan DISABLED.", 25f, 75f)
-        text(if (giftWrappingEnabled) "[G] Gift Wrapping ENABLED." else "[G] Gift Wrapping DISABLED.", 25f, 100f)
-        text(if (triangulationEnabled) "[T] Triangulation ENABLED." else "[T] Triangulation DISABLED.", 25f, 125f)
-        text(if (polygonDefinitionEnabled) "[P] Polygon definition ENABLED." else "[P] Polygon definition DISABLED.", 25f, 150f)
-        text(if (kDTreesEnabled) "[K] k-d trees ENABLED." else "[K] k-d trees DISABLED.", 25f, 175f)
-        text(if (delaunayTriangulationEnabled) "[D] Delaunay triangulation ENABLED." else "[D] Delaunay triangulation DISABLED.", 25f, 200f)
-        text("[R] Add random point.", 25f, 225f)
-        text("[L_MOUSE] Add new point / move point.", 25f, 250f)
-        text("[R_MOUSE] Delete the point.", 25f, 275f)
-
-        widgets.forEach { it.draw(this) }
 
         if (polygonPoints.isNotEmpty()) {
             var previous = if (polygonClosed) {
@@ -202,32 +187,48 @@ class Sketch : PApplet() {
 
         /* kD trees */
         if (kDTreesEnabled) {
-            drawKdTree(constructKdTree(points.toList()))
+            drawKdTree(
+                    node = constructKdTree(points.toList()))
         }
 
-        /* Delaunay triangulation */
-        if (delaunayTriangulationEnabled) {
-            val delaunay = computeDelaunay(points)
-            delaunay.first.forEach {
-                fill(0)
-                stroke(0)
-                line(it.first.x.toFloat(), it.first.y.toFloat(), it.second.x.toFloat(), it.second.y.toFloat())
-            }
-
-            delaunay.second.forEach {
-                stroke(Color.RED.rgb, 40.0f)
-                fill(255, 0.0f)
-                ellipse(it.center.x.toFloat(), it.center.y.toFloat(), it.radius.toFloat() * 2.0f, it.radius.toFloat() * 2.0f)
-                fill(Color.RED.rgb, 40.0f)
-                ellipse(it.center.x.toFloat(), it.center.y.toFloat(), 4.0f, 4.0f)
-            }
+        /* DELAUNAY TRIANGULATION AND VORONOI DIAGRAM */
+        if (delaunayTriangulationEnabled || voronoiDiagramEnabled) {
+            drawDelaunayOrVoronoi(
+                    delaunay = computeDelaunay(points),
+                    delaunayTriangulationEnabled = delaunayTriangulationEnabled,
+                    voronoiDiagramEnabled = voronoiDiagramEnabled,
+                    circumCirclesEnabled = circumCirclesEnabled)
         }
+
+        /* UI/controls */
+        fill(150f, 241f, 255f)
+        stroke(150f, 241f, 255f)
+        rect(0f, 0f, leftPanelSize.toFloat(), height.toFloat())
+        fill(255f, 0f, 90f)
+        text(if (isInPointsEditingMode) "[Enter] Points editing ENABLED." else "[Enter] Points editing DISABLED.", 25f, 25f)
+        text("[X] CLEAR", 25f, 50f)
+        text(if (grahamScanEnabled) "[S] Graham Scan ENABLED." else "[S] Graham Scan DISABLED.", 25f, 75f)
+        text(if (giftWrappingEnabled) "[G] Gift Wrapping ENABLED." else "[G] Gift Wrapping DISABLED.", 25f, 100f)
+        text(if (triangulationEnabled) "[T] Triangulation ENABLED." else "[T] Triangulation DISABLED.", 25f, 125f)
+        text(if (polygonDefinitionEnabled) "[P] Polygon definition ENABLED." else "[P] Polygon definition DISABLED.", 25f, 150f)
+        text(if (kDTreesEnabled) "[K] k-d trees ENABLED." else "[K] k-d trees DISABLED.", 25f, 175f)
+        text(if (delaunayTriangulationEnabled) "[D] Delaunay triangulation ENABLED." else "[D] Delaunay triangulation DISABLED.", 25f, 200f)
+        text(if (voronoiDiagramEnabled) "[V] Voronoi diagram ENABLED." else "[V] Voronoi diagram DISABLED.", 25f, 225f)
+        text(if (circumCirclesEnabled) "[C] Circum circles ENABLED." else "[C] Circum circles DISABLED.", 25f, 250f)
+        text("[R] Add random point.", 25f, 275f)
+        text("[L_MOUSE] Add new point / move point.", 25f, 300f)
+        text("[R_MOUSE] Delete the point.", 25f, 325f)
+
+        widgets.forEach { it.draw(this) }
     }
 
     /* MOUSE EVENTS */
 
     override fun mousePressed() {
         if (isInPointsEditingMode) {
+            if (mouseX <= leftPanelSize) {
+                return
+            }
             if (mouseButton == PConstants.RIGHT) {
                 deletePointContaining(mouseX, mouseY)
             } else {
@@ -338,7 +339,12 @@ class Sketch : PApplet() {
                 }
                 'd' -> {
                     delaunayTriangulationEnabled = !delaunayTriangulationEnabled
-                    kotlin.io.println()
+                }
+                'v' -> {
+                    voronoiDiagramEnabled = !voronoiDiagramEnabled
+                }
+                'c' -> {
+                    circumCirclesEnabled = !circumCirclesEnabled
                 }
                 else -> if (selectedInputField != null) {
                     selectedInputField!!.text += key
@@ -360,6 +366,8 @@ class Sketch : PApplet() {
         triangulationEnabled = false
         kDTreesEnabled = false
         delaunayTriangulationEnabled = false
+        voronoiDiagramEnabled = false
+        circumCirclesEnabled = false
     }
 
     /*
@@ -393,25 +401,5 @@ class Sketch : PApplet() {
 
     private fun deletePointContaining(x: Int, y: Int) = points.removeIf {
         Math.pow((x - it.x), 2.0) + Math.pow((y - it.y), 2.0) <= Math.pow(pointDiameter / 2.0, 2.0)
-    }
-
-    private fun drawKdTree(node: KdNode?) {
-        if (node == null) {
-            return
-        }
-        val color = colors[node.depth % numOfColors]
-        stroke(color)
-        fill(color)
-        ellipse(node.point.x.toFloat(), node.point.y.toFloat(), pointDiameter.toFloat(), pointDiameter.toFloat())
-
-        val boundary = getLineBoundary(node) ?: return
-
-        if (node.depth % 2 != 0) {
-            line(boundary.first.toFloat(), node.point.y.toFloat(), boundary.second.toFloat(), node.point.y.toFloat())
-        } else {
-            line(node.point.x.toFloat(), boundary.first.toFloat(), node.point.x.toFloat(), boundary.second.toFloat())
-        }
-        drawKdTree(node.lesser)
-        drawKdTree(node.greater)
     }
 }

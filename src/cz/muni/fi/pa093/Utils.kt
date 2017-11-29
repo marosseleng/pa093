@@ -9,7 +9,7 @@ import java.awt.Color
 import java.util.*
 
 val windowSize = 1100
-val pointDiameter = 12
+val pointDiameter = 8
 val leftPanelSize = 350
 
 val colors: List<Int> by lazy {

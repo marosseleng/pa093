@@ -19,21 +19,59 @@ fun Edge.reversed() = Edge(second, first)
 fun Edge.to(point: Point) = Edge(second, point)
 
 /**
- * Data class representing a [Circle] that is represented by its [center] and [radius]
+ * Returns a [Point] that represents the center of this edge
  */
-data class Circle(val center: Point, val radius: Double)
+fun Edge.center() = Point((first.x + second.x) / 2, (first.y + second.y) / 2)
 
 /**
- * Returns [kotlin.Pair] containing edges present in the triangulation and circum circles of resulting triangles
+ * Class representing a triangle that is defined by the [kotlin.collections.Set] of points
  */
-fun computeDelaunay(points: Set<Point>): Pair<List<Edge>, Set<Circle>> {
+class Triangle(first: Point, second: Point, third: Point) {
+
+    val pointsAsSet = setOf(first, second, third)
+    val pointsAsList = listOf(first, second, third)
+
+    constructor(edge: Edge, point: Point): this(edge.first, edge.second, point)
+
+    override fun equals(other: Any?): Boolean {
+        return other != null && other is Triangle && this.pointsAsSet == other.pointsAsSet
+    }
+
+    override fun hashCode(): Int {
+        return pointsAsSet.hashCode()
+    }
+
+    fun getEdges(): Set<Edge> {
+        val pointsList = pointsAsSet.toList()
+        val firstEdge = Edge(pointsList[0], pointsList[1])
+        return setOf(firstEdge, firstEdge.to(pointsList[2]), firstEdge.to(pointsList[2]).to(pointsList[0]))
+    }
+}
+
+/**
+ * Class representing a [Circle] that is represented by its [center] and [radius]
+ */
+class Circle(val center: Point, val radius: Double) {
+    override fun equals(other: Any?): Boolean {
+        return other != null && other is Circle && other.center == this.center
+    }
+
+    override fun hashCode(): Int {
+        return center.hashCode()
+    }
+}
+
+/**
+ * Returns [kotlin.collections.Map] of resulting triangles and their circum circles
+ */
+fun computeDelaunay(points: Set<Point>): Map<Triangle, Circle> {
     if (points.count() < 3) {
-        return Pair(emptyList(), emptySet())
+        return emptyMap()
     }
 
     val edgesToCheck = mutableListOf<Edge>()
-    val triangulation = mutableListOf<Edge>()
-    val circles = mutableSetOf<Circle>()
+    val triangulation = mutableSetOf<Edge>()
+    val trianglesAndCircles = mutableMapOf<Triangle, Circle>()
 
     // first two points
     val firstPoint = points.sortedBy { it.x }.first()
@@ -48,16 +86,17 @@ fun computeDelaunay(points: Set<Point>): Pair<List<Edge>, Set<Circle>> {
         // no suitable point to the left of this edge, reverse it!
         firstEdge = firstEdge.reversed()
         thirdPoint = getPointWithSmallestDelaunayDistance(firstEdge, (points - firstPoint - closestPoint))
-                ?: return Pair(emptyList(), emptySet())
+                ?: return emptyMap()
     }
 
     triangulation.add(firstEdge)
     triangulation.add(firstEdge.to(thirdPoint))
     triangulation.add(Edge(thirdPoint, firstPoint))
 
-    val circumCircle = circumCircle(firstEdge.first, firstEdge.second, thirdPoint)
+    val triangle = Triangle(firstEdge.first, firstEdge.second, thirdPoint)
+    val circumCircle = circumCircle(triangle)
     if (circumCircle != null) {
-        circles.add(circumCircle)
+        trianglesAndCircles[triangle] = circumCircle
     }
 
     edgesToCheck.add(firstEdge)
@@ -69,9 +108,10 @@ fun computeDelaunay(points: Set<Point>): Pair<List<Edge>, Set<Circle>> {
         val nextEdge = edgesToCheck[0].reversed()
         val bestPoint = getPointWithSmallestDelaunayDistance(nextEdge, points - nextEdge.first - nextEdge.second)
         if (bestPoint != null) {
-            val circumCircle = circumCircle(nextEdge.first, nextEdge.second, bestPoint)
+            val triangle = Triangle(nextEdge.first, nextEdge.second, bestPoint)
+            val circumCircle = circumCircle(triangle)
             if (circumCircle != null) {
-                circles.add(circumCircle)
+                trianglesAndCircles[triangle] = circumCircle
             }
             val second = nextEdge.to(bestPoint)
             val third = second.to(nextEdge.first)
@@ -88,7 +128,7 @@ fun computeDelaunay(points: Set<Point>): Pair<List<Edge>, Set<Circle>> {
         edgesToCheck.removeAt(0)
     }
 
-    return Pair(triangulation, circles)
+    return trianglesAndCircles
 }
 
 /**
@@ -106,7 +146,7 @@ fun getPointWithSmallestDelaunayDistance(edge: Edge, points: Collection<Point>) 
  * Returns [kotlin.Int.MAX_VALUE] iff all points lie on the same line
  */
 fun delaunayDistance(edge: Edge, point: Point): Double {
-    val circumCircle = circumCircle(point, edge.second, edge.first) ?: return Double.MAX_VALUE
+    val circumCircle = circumCircle(Triangle(edge, point)) ?: return Double.MAX_VALUE
     val radius = circumCircle.radius
 
     return if (pointsFormLeftTurn(circumCircle.center, edge.second, edge.first) == pointsFormLeftTurn(point, edge.second, edge.first)) {
@@ -121,7 +161,11 @@ fun delaunayDistance(edge: Edge, point: Point): Double {
 /**
  * Returns [Circle] iff the points are not colinear; null otherwise
  */
-fun circumCircle(p1: Point, p2: Point, p3: Point): Circle? {
+fun circumCircle(triangle: Triangle): Circle? {
+    val points = triangle.pointsAsList
+    val p1 = points[0]
+    val p2 = points[1]
+    val p3 = points[2]
     val cp = crossProduct(p1, p2, p3)
     return if (cp != 0.0) {
         val p1Sq = p1.x * p1.x + p1.y * p1.y

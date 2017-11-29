@@ -11,8 +11,16 @@ data class Point(var x: Double, var y: Double) {
         return Point(x - other.x, other.y - y)
     }
 
+    operator fun plus(other: Point): Point {
+        return Point(x + other.x, other.y + y)
+    }
+
     operator fun times(other: Point): Double {
         return x * other.x + y * other.y
+    }
+
+    operator fun times(coeff: Double): Point {
+        return Point(x * coeff, y * coeff)
     }
 
     fun vectorLength(): Double {
