@@ -96,5 +96,6 @@ fun findPointsToPop(stack: Deque<Point>, currentPoint: Point, leftPath: Deque<Po
         top = tmp
     }
 
-    return if (foundCorrectPoint) { someCounter - 1 } else { 0 } // returning " - 1" because we want to leave the last popped point in the stack
+    // returning " - 1" because we want to leave the last popped point in the stack
+    return if (foundCorrectPoint) (someCounter - 1) else 0
 }

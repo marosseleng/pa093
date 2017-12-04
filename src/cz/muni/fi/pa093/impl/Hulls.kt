@@ -57,7 +57,7 @@ fun grahamScan(points: Set<Point>): List<Point> {
     stack.push(remaining.first())
     var j = 1
     while (j < remaining.count()) {
-        // retrieving items like this, because this implemenation pushes to the front
+        // retrieving items like this, because this queue implemenation pushes to the front
         val first = stack[stack.lastIndex - stack.lastIndex]
         val second = stack[stack.lastIndex - stack.lastIndex + 1]
         val third = remaining[j]

@@ -8,9 +8,9 @@ package cz.muni.fi.pa093
 import java.awt.Color
 import java.util.*
 
-val windowSize = 1100
+val windowSize = 1000
 val pointDiameter = 8
-val leftPanelSize = 350
+val leftPanelSize = 320
 
 val colors: List<Int> by lazy {
     arrayOf(Color.BLACK, Color.RED, Color.CYAN, Color.YELLOW, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.GRAY, Color.GREEN, Color.BLUE)
@@ -80,7 +80,7 @@ fun pointsFormLeftTurn(first: Point, center: Point, last: Point): Boolean {
  * This function will return the same list (containing the same points) but rotated (or mirrored) such that
  * the first point in the list will be the lower-most one and the button will be ordered in the counter-clockwise order
  *
- * 2 Conditions that guarantee the "wellness" of the polygon:
+ * 2 Conditions that guarantee the "correctness" of the polygon:
  *     * Index of the lowest point is 0
  *     * [1].y <= [0].y && [1].x > [0].x
  */

@@ -41,10 +41,16 @@ class Triangle(first: Point, second: Point, third: Point) {
         return pointsAsSet.hashCode()
     }
 
+    /**
+     * Returns this, represented as a set of 3 [Edge]s
+     */
     fun getEdges(): Set<Edge> {
         val pointsList = pointsAsSet.toList()
         val firstEdge = Edge(pointsList[0], pointsList[1])
-        return setOf(firstEdge, firstEdge.to(pointsList[2]), firstEdge.to(pointsList[2]).to(pointsList[0]))
+        return setOf(
+                firstEdge,
+                firstEdge.to(pointsList[2]),
+                firstEdge.to(pointsList[2]).to(pointsList[0]))
     }
 }
 
@@ -79,11 +85,11 @@ fun computeDelaunay(points: Set<Point>): Map<Triangle, Circle> {
 
     var firstEdge = Edge(firstPoint, closestPoint)
 
-    // find the first point!
+    // find the suitable third point
     var thirdPoint = getPointWithSmallestDelaunayDistance(firstEdge, (points - firstPoint - closestPoint))
 
     if (thirdPoint == null) {
-        // no suitable point to the left of this edge, reverse it!
+        // no suitable point to the left of this edge, reverse it
         firstEdge = firstEdge.reversed()
         thirdPoint = getPointWithSmallestDelaunayDistance(firstEdge, (points - firstPoint - closestPoint))
                 ?: return emptyMap()

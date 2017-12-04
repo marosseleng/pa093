@@ -1,8 +1,26 @@
-package cz.muni.fi.pa093.widget
+package cz.muni.fi.pa093
 
-import cz.muni.fi.pa093.Point
 import processing.core.PApplet
 
+/**
+ * Simple abstract class representing a UI widget
+ */
+interface AbstractWidget {
+    var isSelected: Boolean
+    val id: Int
+    val stroke: Int
+        get() = 0
+
+    val fill: Int
+        get() = if (isSelected) 230 else 255
+
+    fun pointIsInside(x: Int, y: Int): Boolean
+    fun draw(applet: PApplet)
+}
+
+/**
+ * Widget used to handle user text input
+ */
 open class InputFieldWidget(private var topLeft: Point, private var width: Int, private var height: Int, var text: String, override val id: Int) : AbstractWidget {
     override var isSelected = false
 
@@ -22,3 +40,8 @@ open class InputFieldWidget(private var topLeft: Point, private var width: Int, 
         }
     }
 }
+
+/**
+ * Button-like widget
+ */
+class ButtonWidget(topLeft: Point, width: Int, height: Int, text: String, id: Int) : InputFieldWidget(topLeft, width, height, text, id)
